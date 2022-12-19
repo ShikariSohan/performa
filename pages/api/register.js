@@ -1,23 +1,26 @@
-const User = require("../models/ModelUser");
+import { executeQuery } from "../../lib/db";
+import { registrationHandler } from "../../utils/registrationHandler";
 
-export default async(req,res)=>{
-if(req.method=="POST")
-{
+export default async (req, res) => {
+  if (req.method === "GET") res.send(200);
+  else if (req.method === "POST") {
     console.log(req.body);
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const user = await User.create({
-    email: req.body.email,
-    password: hashedPassword,
-    phone: req.body.phoneNumber,
-    role: req.body.role
-  });
-     const token = jwt.sign(
-    {
-      userId: user._id,
+    const user = await executeQuery(
+      "SELECT userId FROM users WHERE email=(?)",
+      [req.body.email]
+    );
+    console.log(user);
+    if (user.length != 0) {
+      res.json({ msg: "user already exists",err:true });
+      return res.end();
+    }
+    const token = await registrationHandler(req);
+    const confirmUser = {
       email: req.body.email,
-    },
-    process.env.EMAIL_SECRET,
-    { expiresIn: "24h" }
-  );
-}
-}
+      token: token,
+    };
+    return res
+      .status(201)
+      .json({ msg: "User Added Successfully!",err: false });
+  }
+};
