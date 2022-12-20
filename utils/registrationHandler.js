@@ -6,12 +6,12 @@ const registrationHandler = async (req) => {
   console.log(req.body.password);
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
   console.log(hashedPassword);
-  await executeQuery("INSERT INTO pendingUsers (email,password) VALUES(?,?)", [
+  await executeQuery("INSERT INTO User (email,password) VALUES(?,?)", [
     req.body.email,
     hashedPassword,
   ]);
   const result = await executeQuery(
-    "SELECT userId FROM pendingUsers WHERE email=(?)",
+    "SELECT userId FROM User WHERE email=(?)",
     [req.body.email]
   );
 
