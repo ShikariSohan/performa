@@ -29,7 +29,7 @@ export default function Register() {
   return (
     <>
       <Head>
-        <title>{`Register | Team Rivals`}</title>
+        <title>{`Register | Performa`}</title>
       </Head>
       <Container
         className={styles.wrapper}
@@ -53,12 +53,12 @@ export default function Register() {
           ) : (
             <Typography sx={{ color: "white" }}>{msg}</Typography>
           )}
-          
+          <Box style={{paddingLeft:'40px'}}>
             <RegisterForm
               buttonName='Register'
               onChangeSubmit={handleSubmitForm}
             />
-    
+          </Box>
         </Grid>
       </Container>
     </>

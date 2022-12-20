@@ -2,6 +2,8 @@ import HeadComponent from "../../component/HeadComponent";
 import Image from "next/image";
 import { Inter } from "@next/font/google";
 import Navbar from "../../component/Navbar/Navbar";
+import { useRouter } from "next/router";
+
 import {
   Typography,
   Box,
@@ -19,7 +21,13 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { useState } from "react";
 import axios from "axios";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+});
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
@@ -32,9 +40,27 @@ export default function Home() {
   const [cost, setCost] = useState("");
   const [timeSpan, setTimeSpan] = useState("");
   const [goal, setGoal] = useState("");
-  const [value, setValue] = useState(dayjs("2014-08-18T21:11:54"));
+  const [value, setValue] = useState(dayjs("2022-12-21T21:11:54"));
+  const [compId, setCompId] = useState("");
+  const [budgetRatio, setBudgetRatio] = useState(0);
+  const [compType, setCompType] = useState("");
+  const [comp, setComp] = useState([]);
   const handleProposalChange = (newValue) => {
-    setValue(newValue);
+    const d = newValue.toISOString();
+    setValue(d.slice(0, 10));
+  };
+  const router = useRouter();
+  const compClick = () => {
+    const c = {
+      componantId: compId,
+      componantType: compType,
+      budgetRatio,
+      usercode: "1233ABC",
+    };
+    console.log(comp);
+    setComp((prev) => {
+      return [...prev, c];
+    });
   };
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
@@ -65,28 +91,41 @@ export default function Home() {
   };
 
   //const handle
-  const SubmitHandler = (e) =>{
- e.preventDefault();
- const project = {
-  title:title,
-  projectId:id,
-  ea:ea,
-  location:location,
-  lat:lat,
-  long:long,
-  cost:cost,
-  timeSpan:timeSpan,
-  proposalDate:value
- }
-  axios.post("/api/project/new", project);
-  }
+  const SubmitHandler = (e) => {
+    e.preventDefault();
+    const project = {
+      title: title,
+      projectId: id,
+      ea: ea,
+      location: location,
+      lat: lat,
+      long: long,
+      cost: cost,
+      timeSpan: timeSpan,
+      proposalDate: value,
+      goal: goal,
+      componants: comp,
+    };
+    axios
+      .post("/api/project/new", project)
+      .then(function (res) {
+        if (res.status == 200) {
+          router.push("/proposal");
+        }
+      })
+      .catch(function (e) {
+        console.log(e);
+      });
+    console.log(project);
+  };
 
   return (
     <>
       <Navbar />
+
       <Box sx={{ width: "70%", m: 4 }}>
         <Typography>Create new project..</Typography>
-        <form onSubmit={SubmitHandler}>
+        <form>
           <TextField
             fullWidth
             label='Project Id'
@@ -195,7 +234,49 @@ export default function Home() {
               />
             </Stack>
           </LocalizationProvider>
-          <Button type='submit' variant='contained' sx={{ m: 4 }}>
+          <h4>Added Componant {comp.length}</h4>
+          <TextField
+            fullWidth
+            label='Componant ID'
+            id='title'
+            size='small'
+            value={compId}
+            sx={{ mt: 1, mb: 2, width: "70ch" }}
+            onChange={(e) => {
+              setCompId(e.target.value);
+            }}
+            // onChange={handleTimeSpanChange}
+          />
+          <TextField
+            fullWidth
+            label='Componant Type'
+            id='title'
+            size='small'
+            value={compType}
+            sx={{ mt: 1, mb: 2, width: "70ch" }}
+            onChange={(e) => {
+              setCompType(e.target.value);
+            }}
+            // onChange={handleTimeSpanChange}
+          />
+          <TextField
+            fullWidth
+            label='Budget Ratio'
+            id='title'
+            size='small'
+            value={budgetRatio}
+            sx={{ mt: 1, mb: 2, width: "70ch" }}
+            onChange={(e) => {
+              setBudgetRatio(e.target.value);
+            }}
+            // onChange={handleTimeSpanChange}
+          />
+
+          <Button variant='contained' sx={{ m: 2 }} onClick={compClick}>
+            Add New Componant
+          </Button>
+
+          <Button variant='contained' sx={{ m: 4 }} onClick={SubmitHandler}>
             Submit
           </Button>
         </form>

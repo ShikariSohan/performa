@@ -24,13 +24,17 @@ const darkTheme = createTheme({
 function DarkTextField(props) {
   const [value, setValue] = useState("");
   const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [helperText, setHelperText] = useState("");
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [passHelperText, setPassHelperText] = useState("");
+  const [usercode, setUserCode] = useState("");
   //const [disable, setDisable] = useState(true);
+  const handleUserCodeChange = (e) => {
+    setUserCode(e.target.value);
+  };
   const handleRadioChange = (event) => {
     setValue(event.target.value);
   };
@@ -47,8 +51,8 @@ function DarkTextField(props) {
     setHelperText(msg);
   };
   //phone number
-  const handlePhoneNumberChange = (e) => {
-    setPhoneNumber(e.target.value);
+  const handleNameChange = (e) => {
+    setName(e.target.value);
   };
   // password change
   const handlePasswordChange = (e) => {
@@ -65,10 +69,11 @@ function DarkTextField(props) {
   const handleSubmit = (e) => {
     e.preventDefault();
     const newUser = {
+      usercode:usercode,
       email: email,
       password: password,
       role: value,
-      phone: phoneNumber,
+      name: name,
     };
     console.log(newUser);
     if (emailValidation(email).valid && !passwordStrength(password)) {
@@ -76,13 +81,26 @@ function DarkTextField(props) {
       setEmail("");
       setPassword("");
     }
-  };
+  };      
 
   return (
     <ThemeProvider theme={darkTheme}>
-      <form
-        style={{ display: "flex", flexDirection: "column" }}
+<form
+        style={{ display: "flex", flexDirection: "column"}}
         onSubmit={handleSubmit}>
+        <TextField
+          helperText={helperText}
+          label='User Id'
+          id='UserId'
+          size='small'
+          value={usercode}
+          sx={{ mt: 1, mb: 2 }}
+          inputProps={{ style: inputStyle }}
+          className={styles.style}
+          type='text'
+          onChange={handleUserCodeChange}
+        />
+
         <TextField
           helperText={helperText}
           label='Email Address'
@@ -96,7 +114,6 @@ function DarkTextField(props) {
           onChange={handleEmailChange}
           error={emailError}
         />
-
         <TextField
           helperText={passHelperText}
           label='Enter Password'
@@ -110,48 +127,48 @@ function DarkTextField(props) {
           onChange={handlePasswordChange}
           error={passwordError}
         />
-
         <TextField
-          label='Enter Phone Number'
+          label='Enter Name'
           inputProps={{ style: inputStyle }}
           className={styles.style}
           sx={{ mt: 1, mb: 2 }}
-          onChange={handlePhoneNumberChange}
+          onChange={handleNameChange}
           size='small'
-          id='PhoneNumber'
-          value={phoneNumber}
+          id='Name'
+          value={name}
         />
         <FormControl>
           <FormLabel id='demo-row-radio-buttons-group-label'>
             Select Role
           </FormLabel>
           <RadioGroup
+            row
             aria-labelledby='demo-row-radio-buttons-group-label'
             name='row-radio-buttons-group'
             value={value}
             onChange={handleRadioChange}>
             <FormControlLabel
               sx={{ color: "white" }}
-              value='Executing Agency'
+              value='EXEC'
               control={<Radio />}
               label='Executing Agency'
             />
             <FormControlLabel
               sx={{ color: "white" }}
-              value='Ministry of Planning'
+              value='MOP'
               control={<Radio />}
               label='Ministry of Planning'
             />
 
             <FormControlLabel
               sx={{ color: "white" }}
-              value='Executing Committee of the National Economic Council'
+              value='ECNEC'
               control={<Radio />}
               label='Executing Committee of the National Economic Council'
             />
             <FormControlLabel
               sx={{ color: "white" }}
-              value='Application Users'
+              value='APP'
               control={<Radio />}
               label='Application Users'
             />

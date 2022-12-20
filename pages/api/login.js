@@ -1,12 +1,16 @@
 import bcrypt from "bcrypt";
-import { loginHandler } from "../../../utils/loginHandler";
-import { settCookie } from "../../../utils/settCookie";
+import { loginHandler } from "../../utils/loginHandler";
+import { settCookie } from "../../middleware/settCookie";
 
 export default async (req, res) => {
   if (req.method === "GET") res.send(200);
   else if (req.method === "POST") {
     const user = await loginHandler(req);
-    console.log(user);
+    if(!user[0])
+   {
+    
+     return res.json({msg:"No user found"});
+   }
     const matchPassword = await bcrypt.compare(
       req.body.password,
       user[0].password

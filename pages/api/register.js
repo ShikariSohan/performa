@@ -6,12 +6,12 @@ export default async (req, res) => {
   else if (req.method === "POST") {
     console.log(req.body);
     const user = await executeQuery(
-      "SELECT userId FROM users WHERE email=(?)",
+      "SELECT usercode FROM users WHERE email=(?)",
       [req.body.email]
     );
     console.log(user);
     if (user.length != 0) {
-      res.json({ msg: "user already exists",err:true });
+      res.json({ msg: "user already exists", err: true });
       return res.end();
     }
     const token = await registrationHandler(req);
@@ -21,6 +21,6 @@ export default async (req, res) => {
     };
     return res
       .status(201)
-      .json({ msg: "User Added Successfully!",err: false });
+      .json({ msg: "User Added Successfully!", err: false });
   }
 };
