@@ -26,7 +26,7 @@ import { useAuth } from "../../context/AuthProvider";
 import NavbarStyles from "./Navbar.module.scss";
 function Navbar() {
   const { auth, IsAdmin, logout, IsEditor } = useAuth();
-  const user ="";
+  const user = "";
   const id = "";
   //const user = auth.user;
   // const id = auth.id;
@@ -47,11 +47,6 @@ function Navbar() {
   return (
     <AppBar position='sticky' className={NavbarStyles.bg}>
       <Toolbar>
-        <Image
-          src='/favicon.ico'
-          width={60}
-          height={60}
-          layout='intrinsic'></Image>
         <Link href='/'>
           <Typography variant='h6' component='div' flexGrow='1'>
             Performa
@@ -72,17 +67,15 @@ function Navbar() {
               </Link>
             </Button>
           )}
-         
-          
+
           <Button className={NavbarStyles.navItem}>
             <Link
               underline='none'
               className={NavbarStyles.otherItems}
               href='/fixture'>
-              Fixture
+              Projects
             </Link>
           </Button>
-         
 
           {!user && (
             <>
